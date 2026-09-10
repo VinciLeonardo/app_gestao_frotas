@@ -2,10 +2,7 @@ package br.com.gestaofrota;
 
 import br.com.gestaofrota.database.ConexaoBanco;
 import br.com.gestaofrota.excecoes.DadosVeiculoInvalidosException;
-import br.com.gestaofrota.model.Caminhao;
-import br.com.gestaofrota.model.Carro;
-import br.com.gestaofrota.model.Moto;
-import br.com.gestaofrota.model.Veiculo;
+import br.com.gestaofrota.model.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,7 +31,11 @@ public class MainOriginal {
             System.out.println("1. Cadastrar Carro");
             System.out.println("2. Cadastrar Moto");
             System.out.println("3. Cadastrar Caminhão");
-            System.out.println("4. Listar Frota Completa (Polimorfismo)");
+            System.out.println("4. Cadastrar Onibus");
+            System.out.println("5. Cadastrar Triciclo Eletrico");
+            System.out.println("6. Cadastrar Ambulância");
+            System.out.println("7. Cadastrar Trator");
+            System.out.println("9. Listar Frota Completa (Polimorfismo)");
             System.out.println("0. Sair");
             System.out.print("> Escolha uma opção: ");
 
@@ -45,7 +46,11 @@ public class MainOriginal {
                     case 1 -> cadastrarCarro(scanner);
                     case 2 -> cadastrarMoto(scanner);
                     case 3 -> cadastrarCaminhao(scanner);
-                    case 4 -> listarFrota();
+                    case 4 -> cadastrarOnibus(scanner);
+                    case 5 -> cadastrarTricicloEletrico(scanner);
+                    case 6 -> cadastrarAmbulancia(scanner);
+                    case 7 -> cadastrarTrator(scanner);
+                    case 9 -> listarFrota();
                     case 0 -> System.out.println("Encerrando a aplicação...");
                     default -> System.out.println("Opção inválida!");
                 }
@@ -101,6 +106,102 @@ public class MainOriginal {
             System.err.println("Erro de Banco de Dados: " + e.getMessage());
         } catch (NumberFormatException e) {
             System.err.println("Entrada inválida: Certifique-se de digitar números para Ano/Portas.");
+        }
+    }
+
+    private static void cadastrarAmbulancia(Scanner scanner) {
+        try {
+            System.out.print("Marca: ");
+            String marca = scanner.nextLine();
+            System.out.print("Modelo: ");
+            String modelo = scanner.nextLine();
+            System.out.print("Ano: ");
+            int ano = Integer.parseInt(scanner.nextLine());
+            System.out.print("Número UTI: ");
+            int d = Integer.parseInt(scanner.nextLine());
+
+            Ambulancia ambulancia = new Ambulancia(marca, modelo, ano, d);
+            ConexaoBanco.salvarVeiculo(ambulancia);
+            System.out.println("✅ Ambulância cadastrada e salva no banco com sucesso!");
+
+        } catch (DadosVeiculoInvalidosException e) {
+            System.err.println("Regra de Negócio: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro de Banco de Dados: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Entrada inválida: Certifique-se de digitar números para Ano/Cilindradas.");
+        }
+    }
+
+    private static void cadastrarTrator(Scanner scanner) {
+        try {
+            System.out.print("Marca: ");
+            String marca = scanner.nextLine();
+            System.out.print("Modelo: ");
+            String modelo = scanner.nextLine();
+            System.out.print("Ano: ");
+            int ano = Integer.parseInt(scanner.nextLine());
+            System.out.print("Horas de Uso: ");
+            int d = Integer.parseInt(scanner.nextLine());
+
+            Trator trator = new Trator(marca, modelo, ano, d);
+            ConexaoBanco.salvarVeiculo(trator);
+            System.out.println("✅ Trator cadastrado e salvo no banco com sucesso!");
+
+        } catch (DadosVeiculoInvalidosException e) {
+            System.err.println("Regra de Negócio: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro de Banco de Dados: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Entrada inválida: Certifique-se de digitar números para Ano/Cilindradas.");
+        }
+    }
+
+    private static void cadastrarTricicloEletrico(Scanner scanner) {
+        try {
+            System.out.print("Marca: ");
+            String marca = scanner.nextLine();
+            System.out.print("Modelo: ");
+            String modelo = scanner.nextLine();
+            System.out.print("Ano: ");
+            int ano = Integer.parseInt(scanner.nextLine());
+            System.out.print("Autonomia da Bateria em Km: ");
+            int d = Integer.parseInt(scanner.nextLine());
+
+            TricicloEletrico tricicloEletrico = new TricicloEletrico(marca, modelo, ano, d);
+            ConexaoBanco.salvarVeiculo(tricicloEletrico);
+            System.out.println("✅ Triciclo Eletrico cadastrado e salvo no banco com sucesso!");
+
+        } catch (DadosVeiculoInvalidosException e) {
+            System.err.println("Regra de Negócio: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro de Banco de Dados: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Entrada inválida: Certifique-se de digitar números para Ano/Cilindradas.");
+        }
+    }
+
+    private static void cadastrarOnibus(Scanner scanner) {
+        try {
+            System.out.print("Marca: ");
+            String marca = scanner.nextLine();
+            System.out.print("Modelo: ");
+            String modelo = scanner.nextLine();
+            System.out.print("Ano: ");
+            int ano = Integer.parseInt(scanner.nextLine());
+            System.out.print("Capacidade de Passageiros: ");
+            int d = Integer.parseInt(scanner.nextLine());
+
+            Onibus onibus = new Onibus(marca, modelo, ano, d);
+            ConexaoBanco.salvarVeiculo(onibus);
+            System.out.println("✅ Onibus cadastrado e salvo no banco com sucesso!");
+
+        } catch (DadosVeiculoInvalidosException e) {
+            System.err.println("Regra de Negócio: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro de Banco de Dados: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Entrada inválida: Certifique-se de digitar números para Ano/Cilindradas.");
         }
     }
 

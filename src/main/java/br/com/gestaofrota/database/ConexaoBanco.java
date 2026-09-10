@@ -1,10 +1,7 @@
 package br.com.gestaofrota.database;
 
 import br.com.gestaofrota.excecoes.DadosVeiculoInvalidosException;
-import br.com.gestaofrota.model.Caminhao;
-import br.com.gestaofrota.model.Carro;
-import br.com.gestaofrota.model.Moto;
-import br.com.gestaofrota.model.Veiculo;
+import br.com.gestaofrota.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -67,7 +64,8 @@ public class ConexaoBanco {
 
         String sql = "INSERT INTO veiculos(tipo, marca, modelo, ano, detalhe_especifico) VALUES(?, ?, ?, ?, ?)";
 
-        try (Connection conn = conectar();
+        try (
+                Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, veiculo.getClass().getSimpleName().toUpperCase());
@@ -81,6 +79,14 @@ public class ConexaoBanco {
                 stmt.setInt(5, m.getCilindradas());
             } else if (veiculo instanceof Caminhao c) {
                 stmt.setDouble(5, c.getCapacidadeCargaToneladas());
+            } else if (veiculo instanceof Onibus o){
+                stmt.setInt(5, o.getCapacidadePassageiros());
+            } else if (veiculo instanceof Ambulancia a) {
+                stmt.setInt(5, a.getNumeroUTI());
+            } else if (veiculo instanceof TricicloEletrico t){
+                stmt.setInt(5, t.getAutonomiaBateriaKm());
+            } else if (veiculo instanceof Trator t){
+                stmt.setInt(5, t.getHorasUso());
             }
 
             stmt.executeUpdate();
@@ -109,6 +115,14 @@ public class ConexaoBanco {
                     frota.add(new Moto(id, marca, modelo, ano, detalhe));
                 } else if ("CAMINHAO".equalsIgnoreCase(tipo)) {
                     frota.add(new Caminhao(id, marca, modelo, ano, detalhe));
+                } else if ("AMBULANCIA".equalsIgnoreCase(tipo)) {
+                    frota.add(new Ambulancia(id, marca, modelo, ano, detalhe));
+                } else if ("ONIBUS".equalsIgnoreCase(tipo)) {
+                    frota.add(new Onibus(id, marca, modelo, ano, detalhe));
+                } else if ("TRICICLOELETRICO".equalsIgnoreCase(tipo)) {
+                    frota.add(new TricicloEletrico(id, marca, modelo, ano, detalhe));
+                } else if ("TRATOR".equalsIgnoreCase(tipo)) {
+                    frota.add(new Trator(id, marca, modelo, ano, detalhe));
                 }
             }
         }
