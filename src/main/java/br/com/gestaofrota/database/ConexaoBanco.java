@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ConexaoBanco {
 
-    // Banco de dados em arquivo local 'frota.db' na raiz do projeto
     private static final String URL_CONEXAO = "jdbc:sqlite:frota.db";
 
     public static Connection conectar() throws SQLException {
@@ -42,12 +41,12 @@ public class ConexaoBanco {
             throw new DadosVeiculoInvalidosException("Ano do veículo é inválido: " + veiculo.getAno());
         }
 
-        if (veiculo.getMarca().isBlank() || veiculo.getMarca().isEmpty()) {
+        if (veiculo.getMarca() == null || veiculo.getMarca().isBlank()) {
             throw new DadosVeiculoInvalidosException("A marca deve ser informada!");
         }
 
-        if (veiculo.getModelo().isBlank() || veiculo.getModelo().isEmpty()) {
-            throw new DadosVeiculoInvalidosException("A modelo deve ser informado!");
+        if (veiculo.getModelo() == null || veiculo.getModelo().isBlank()) {
+            throw new DadosVeiculoInvalidosException("O modelo deve ser informado!");
         }
 
         if (veiculo instanceof Carro c){
@@ -64,8 +63,7 @@ public class ConexaoBanco {
 
         String sql = "INSERT INTO veiculos(tipo, marca, modelo, ano, detalhe_especifico) VALUES(?, ?, ?, ?, ?)";
 
-        try (
-                Connection conn = conectar();
+        try (Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, veiculo.getClass().getSimpleName().toUpperCase());
@@ -129,4 +127,14 @@ public class ConexaoBanco {
         return frota;
     }
 
+    // Manutenção Perfectiva: Exclusão de veículo por ID
+    public static boolean deletarVeiculo(int id) throws SQLException {
+        String sql = "DELETE FROM veiculos WHERE id = ?";
+        try (Connection conn = conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+        }
+    }
 }
