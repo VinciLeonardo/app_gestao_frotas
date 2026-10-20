@@ -1,11 +1,22 @@
 package br.com.gestaofrota.database;
 
-import br.com.gestaofrota.excecoes.DadosVeiculoInvalidosException;
-import br.com.gestaofrota.model.*;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.gestaofrota.model.Ambulancia;
+import br.com.gestaofrota.model.Caminhao;
+import br.com.gestaofrota.model.Carro;
+import br.com.gestaofrota.model.Moto;
+import br.com.gestaofrota.model.Onibus;
+import br.com.gestaofrota.model.Trator;
+import br.com.gestaofrota.model.TricicloEletrico;
+import br.com.gestaofrota.model.Veiculo;
 
 public class ConexaoBanco {
 
@@ -35,32 +46,7 @@ public class ConexaoBanco {
         }
     }
 
-    public static void salvarVeiculo(Veiculo veiculo)
-            throws SQLException, DadosVeiculoInvalidosException {
-        if (veiculo.getAno() < 1900 || veiculo.getAno() > 2027) {
-            throw new DadosVeiculoInvalidosException("Ano do veículo é inválido: " + veiculo.getAno());
-        }
-
-        if (veiculo.getMarca() == null || veiculo.getMarca().isBlank()) {
-            throw new DadosVeiculoInvalidosException("A marca deve ser informada!");
-        }
-
-        if (veiculo.getModelo() == null || veiculo.getModelo().isBlank()) {
-            throw new DadosVeiculoInvalidosException("O modelo deve ser informado!");
-        }
-
-        if (veiculo instanceof Carro c){
-            if (c.getQuantidadePortas() < 2 || c.getQuantidadePortas() > 6) {
-                throw new DadosVeiculoInvalidosException("Quantidade de portas deve ser de 2 a 6!");
-            }
-        }
-
-        if (veiculo instanceof Moto m){
-            if (m.getCilindradas() < 50 || m.getCilindradas() > 2500) {
-                throw new DadosVeiculoInvalidosException("Quantidade de cilindradas deve ser entre 50 e 2500!");
-            }
-        }
-
+    public static void salvarVeiculo(Veiculo veiculo) throws SQLException {
         String sql = "INSERT INTO veiculos(tipo, marca, modelo, ano, detalhe_especifico) VALUES(?, ?, ?, ?, ?)";
 
         try (Connection conn = conectar();
@@ -127,14 +113,12 @@ public class ConexaoBanco {
         return frota;
     }
 
-    // Manutenção Perfectiva: Exclusão de veículo por ID
     public static boolean deletarVeiculo(int id) throws SQLException {
         String sql = "DELETE FROM veiculos WHERE id = ?";
         try (Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            int linhasAfetadas = stmt.executeUpdate();
-            return linhasAfetadas > 0;
+            return stmt.executeUpdate() > 0;
         }
     }
 }
